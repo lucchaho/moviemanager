@@ -1,5 +1,4 @@
 import json
-
 from moviemanager import Movie
 
 
@@ -8,14 +7,34 @@ class MovieManager:
         self.movies = []
         self.path = path
 
+    def __repr__(self):
+        print(len(self.movies))
+
+    def __eq__(self, other):
+        return len(self.movies) == other
+
+    def __enter__(self):
+        print("okokok")
+        self.file = open(self.path).read()
+        self.data = json.loads(self.file)
+
+        for elem in self.data["movies"]["movie"]:
+            movie = Movie.Movie(elem)
+            self.movies.append(movie)
+
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        print('ok')
+
     def fetch_data(self):
         try:
-            json_data = open(self.path).read()
-            self.data = json.loads(json_data)
+            self.file = open(self.path).read()
+            self.data = json.loads(self.file)
 
             for elem in self.data["movies"]["movie"]:
-                movie = Movie(elem)
+                movie = Movie.Movie(elem)
                 self.movies.append(movie)
+
         except ValueError:
             print(ValueError)
 
@@ -42,7 +61,9 @@ class MovieManager:
         file.write(self.data)
         file.close()
 
-
+    def printsmthg(self):
+        for movie in self.movies:
+            print(movie.title)
 
 
 
